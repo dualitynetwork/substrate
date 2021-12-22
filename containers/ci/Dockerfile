@@ -19,10 +19,14 @@ RUN \
     mkdir /src; \
     apt-get update; \
     apt-get install $APT_ARGS \
+        build-essential \
         ca-certificates \
         gcc \
         libc6-dev \
+        libclang-dev \
+        libssl-dev \
         wget \
+        pkg-config \
         ;
 
 RUN \
@@ -41,6 +45,7 @@ RUN \
     ./rustup-init -y --no-modify-path --profile minimal --default-toolchain $RUST_VERSION --default-host ${rustArch}; \
     rm rustup-init; \
     chmod -R a+w $RUSTUP_HOME $CARGO_HOME; \
+    rustup component add rustfmt; \
     rustup update nightly-$RUST_NIGHTLY_DATE; \
     rustup target add wasm32-unknown-unknown --toolchain nightly-$RUST_NIGHTLY_DATE; \
     rustup --version; \
