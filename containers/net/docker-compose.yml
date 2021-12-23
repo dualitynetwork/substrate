@@ -1,0 +1,53 @@
+version: "3.9"
+services:
+  builder:
+    build:
+      context: '../..'
+      dockerfile: 'containers/net/build/Dockerfile'
+  node_alpha:
+    build:
+      context: '..'
+      dockerfile: 'net/host/Dockerfile'
+    depends_on:
+      - "builder"
+    ports:
+      - "9933:9933"
+      - "9944:9944"
+      - "30333:30333"
+    networks:
+      default:
+        ipv4_address: 10.1.0.10
+  node_beta:
+    build:
+      context: '..'
+      dockerfile: 'net/host/Dockerfile'
+    depends_on:
+      - "node_alpha"
+    networks:
+      default:
+        ipv4_address: 10.1.0.11
+  node_gamma:
+    build:
+      context: '..'
+      dockerfile: 'net/host/Dockerfile'
+    depends_on:
+      - "node_beta"
+    networks:
+      default:
+        ipv4_address: 10.1.0.12
+  node_delta:
+    build:
+      context: '..'
+      dockerfile: 'net/host/Dockerfile'
+    depends_on:
+      - "node_gamma"
+    networks:
+      default:
+        ipv4_address: 10.1.0.13
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.1.0.0/24
